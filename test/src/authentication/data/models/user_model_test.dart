@@ -25,4 +25,44 @@ void main() {
       expect(result, equals(tModel));
     });
   });
+
+  group('fromJson ', () {
+    test('should return a [UserModel] with the right data', () {
+      final result = UserModel.fromJson(tJson);
+      expect(result, equals(tModel));
+    });
+  });
+
+  group('toMap', () {
+    test('should return a Map with User data', () {
+      final result = tModel.toMap();
+      expect(result, equals(tMap));
+    });
+  });
+
+  group('toJson', () {
+    test('should return a Json with User data', () {
+      final result = tModel.toJson();
+
+      final tJson = jsonEncode({
+        "id": "1",
+        "name": "_empty.name",
+        "avatar": "_empty.avatar",
+        "createdAt": "_empty.createdAt"
+      });
+      expect(result, equals(tJson));
+    });
+  });
+
+  group('copyWith', () {
+    test('should return true on comparing copyWith', () {
+      final result = tModel.copyWith(name: "Prince");
+      expect(result.name, equals('Prince'));
+    });
+
+    test('should return false on comparing value updated by copyWith', () {
+      final result = tModel.copyWith(name: "Prince");
+      expect(result.name, equals("Dane"));
+    });
+  });
 }
