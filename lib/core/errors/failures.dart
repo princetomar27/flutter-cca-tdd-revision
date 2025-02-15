@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'exceptions.dart';
+
 abstract class Failure extends Equatable {
   const Failure({required this.message, required this.statusCode});
 
@@ -11,6 +13,9 @@ abstract class Failure extends Equatable {
 }
 
 class ServerFailure extends Failure {
+  ServerFailure.fromException(ServerException exception)
+      : this(message: exception.message, statusCode: exception.statusCode);
+
   const ServerFailure({required super.message, required super.statusCode});
 }
 
