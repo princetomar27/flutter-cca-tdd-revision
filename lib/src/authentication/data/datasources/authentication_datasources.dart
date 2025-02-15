@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../core/errors/exceptions.dart';
@@ -17,7 +18,7 @@ abstract class AuthenticationDatasource {
 }
 
 const kCreateUserEndpoint = "/test-api/users";
-const kGetUsersEndpoint = "/test-api/user";
+const kGetUsersEndpoint = "/test-api/users";
 
 class AuthenticationDatasourceImpl implements AuthenticationDatasource {
   final http.Client client;
@@ -29,18 +30,20 @@ class AuthenticationDatasourceImpl implements AuthenticationDatasource {
       required String name,
       required String avatar}) async {
     try {
-      final response = await client.post(
-        Uri.parse('$kBaseUrl/$kCreateUserEndpoint'),
-        body: jsonEncode(
-          {
-            'createdAt': createdAt,
-            'name': name,
-            'avatar': avatar,
-          },
-        ),
-      );
+      final response =
+          await client.post(Uri.https(kBaseUrl, kCreateUserEndpoint),
+              body: jsonEncode(
+                {
+                  'createdAt': createdAt,
+                  'name': name,
+                  'avatar': avatar,
+                },
+              ),
+              headers: {
+            'Content-Type': 'application/json',
+          });
 
-      if (response.statusCode != 200 || response.statusCode != 201) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
         throw APIException(
           message: response.body,
           statusCode: response.statusCode,
@@ -59,6 +62,7 @@ class AuthenticationDatasourceImpl implements AuthenticationDatasource {
       final response = await client.get(
         Uri.https(kBaseUrl, kGetUsersEndpoint),
       );
+      debugPrint(Uri.https(kBaseUrl, kGetUsersEndpoint).toString());
       if (response.statusCode != 200) {
         throw APIException(
           message: response.body,
